@@ -16,7 +16,7 @@ impl From<PathBuf> for FileType {
 }
 
 impl FileType {
-    fn comment_prefix(&self) -> &'static str {
+    pub fn comment_prefix(&self) -> &'static str {
         match self {
             FileType::Python => "#",
             FileType::Unknown => "//", // Default to C-style comments

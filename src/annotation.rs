@@ -1,8 +1,5 @@
-use std::char;
-
-const TAG: char = '@';
-
-struct Annotation {
-    kind: String,
-    content: String,
+#[derive(Debug)]
+pub struct Annotation {
+    pub kind: String,
+    pub content: String,
 }
