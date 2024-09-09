@@ -2,6 +2,7 @@ use std::fs;
 use std::path::PathBuf;
 
 use clap::Parser;
+use serde::{Serialize, Deserialize};
 
 mod annotation;
 mod line;
