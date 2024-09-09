@@ -1,6 +1,7 @@
-use std::env;
 use std::fs;
-use std::path::Path;
+use std::path::PathBuf;
+
+use clap::Parser;
 
 mod annotation;
 mod line;
@@ -10,46 +11,52 @@ use annotation::Annotation;
 use line::{CommentLine, FileType};
 use output_adapter::{OutputAdapter, JsonAdapter, YamlAdapter};
 
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct Cli {
+    /// Path to the file to analyze
+    #[arg(value_name = "FILE")]
+    file: PathBuf,
+
+    /// Output format
+    #[arg(short, long, value_enum, default_value = "json")]
+    format: OutputFormat,
+}
+
+#[derive(clap::ValueEnum, Clone)]
+enum OutputFormat {
+    Json,
+    Yaml,
+}
+
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    if args.len() < 2 {
-        eprintln!("Usage: {} <file_path> [--yaml|--json]", args[0]);
-        std::process::exit(1);
-    }
+    let cli = Cli::parse();
 
-    let file_path = Path::new(&args[1]);
-    let output_format = if args.len() > 2 && args[2] == "--yaml" {
-        OutputAdapter::Yaml(YamlAdapter)
-    } else {
-        OutputAdapter::Json(JsonAdapter)
-    };
-
-    let file_type = FileType::from(file_path.to_path_buf());
-    let content = fs::read_to_string(file_path).expect("Failed to read file");
+    let file_type = FileType::from(cli.file.clone());
+    let content = fs::read_to_string(&cli.file).expect("Failed to read file");
 
     let annotations = extract_annotations(&content, &file_type);
+    let output_format = match cli.format {
+        OutputFormat::Json => OutputAdapter::Json(JsonAdapter),
+        OutputFormat::Yaml => OutputAdapter::Yaml(YamlAdapter),
+    };
     let output = output_format.format(&annotations);
     println!("{}", output);
 }
 
 fn extract_annotations(content: &str, file_type: &FileType) -> Vec<Annotation> {
-    let lines: Vec<CommentLine> = content
+    content
         .lines()
         .enumerate()
-        .map(|(i, line)| CommentLine::new(line.to_string(), i + 1))
-        .collect();
-
-    let mut annotations = Vec::new();
-
-    for line in lines {
-        if line.contains(&format!("{}@", file_type.comment_prefix())) {
-            if let Some(annotation) = parse_annotation(&line) {
-                annotations.push(annotation);
+        .filter_map(|(i, line)| {
+            let comment_line = CommentLine::new(line.to_string(), i + 1);
+            if comment_line.contains(&format!("{}@", file_type.comment_prefix())) {
+                parse_annotation(&comment_line)
+            } else {
+                None
             }
-        }
-    }
-
-    annotations
+        })
+        .collect()
 }
 
 fn parse_annotation(line: &CommentLine) -> Option<Annotation> {
