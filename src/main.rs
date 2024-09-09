@@ -8,8 +8,8 @@ mod line;
 mod output_adapter;
 
 use annotation::Annotation;
-use line::{CommentLine, FileType};
-use output_adapter::{OutputAdapter, JsonAdapter, YamlAdapter};
+use line::{CommentLine, FileType, TAG};
+use output_adapter::{JsonAdapter, OutputAdapter, YamlAdapter};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -45,12 +45,14 @@ fn main() {
 }
 
 fn extract_annotations(content: &str, file_type: &FileType) -> Vec<Annotation> {
+    let comment_prefix = file_type.comment_prefix();
+    let anot_prefix = format!("{} {}", comment_prefix, TAG);
     content
         .lines()
         .enumerate()
         .filter_map(|(i, line)| {
-            let comment_line = CommentLine::new(line.to_string(), i + 1);
-            if comment_line.contains(&format!("{}@", file_type.comment_prefix())) {
+            if line.starts_with(&anot_prefix) {
+                let comment_line = CommentLine::new(line.to_string(), i + 1);
                 parse_annotation(&comment_line)
             } else {
                 None
@@ -63,7 +65,7 @@ fn parse_annotation(line: &CommentLine) -> Option<Annotation> {
     let text = line.text();
     let at_pos = text.find('@')?;
     let colon_pos = text[at_pos..].find(':')?;
-    
+
     let kind = text[at_pos + 1..at_pos + colon_pos].trim().to_string();
     let content = text[at_pos + colon_pos + 1..].trim().to_string();
 
