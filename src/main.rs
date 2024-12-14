@@ -1,9 +1,9 @@
 mod annotation;
-mod input;
-mod parser;
-mod output_adapter;
 mod cli;
 mod error;
+mod input;
+mod parser;
+mod render;
 
 use anyhow::Result;
 
@@ -13,10 +13,10 @@ fn main() -> Result<()> {
     let file_type = input::determine_file_type(&args.file);
     let annotations = parser::extract_annotations(&content, &file_type)?;
     let output_format = match args.format {
-        cli::OutputFormat::Json => output_adapter::OutputAdapter::Json(output_adapter::JsonAdapter),
-        cli::OutputFormat::Yaml => output_adapter::OutputAdapter::Yaml(output_adapter::YamlAdapter),
+        cli::OutputFormat::Json => render::RenderAdapter::Json(render::JsonAdapter),
+        cli::OutputFormat::Yaml => render::RenderAdapter::Yaml(render::YamlAdapter),
     };
-    let output = output_format.format(&annotations);
+    let output = output_format.format(&annotations)?;
     println!("{}", output);
     Ok(())
 }

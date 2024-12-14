@@ -1,6 +1,6 @@
+use anyhow::Result;
 use std::fs;
 use std::path::PathBuf;
-use anyhow::Result;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum FileType {
