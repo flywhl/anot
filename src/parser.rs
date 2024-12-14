@@ -11,8 +11,17 @@ pub fn extract_annotations(content: &str, file_type: &FileType) -> Result<Vec<An
         .lines()
         .enumerate()
         .filter_map(|(i, line)| {
-            if line.starts_with(&anot_prefix) {
+            if line.contains(&anot_prefix) {
                 parse_annotation(line, i + 1)
+            } else if line.contains(&format!("{}{}", comment_prefix, TAG)) {
+                // Handle inline comments
+                let parts: Vec<&str> = line.split(comment_prefix).collect();
+                if let Some(comment) = parts.last() {
+                    if comment.trim().starts_with(TAG) {
+                        return parse_annotation(comment.trim(), i + 1);
+                    }
+                }
+                None
             } else {
                 None
             }
@@ -20,7 +29,7 @@ pub fn extract_annotations(content: &str, file_type: &FileType) -> Result<Vec<An
         .collect())
 }
 
-fn parse_annotation(line: &str, line_number: usize) -> Option<Annotation> {
+fn parse_annotation(line: &str, _line_number: usize) -> Option<Annotation> {
     let at_pos = line.find('@')?;
     let colon_pos = line[at_pos..].find(':')?;
 
