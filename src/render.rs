@@ -1,7 +1,5 @@
 use crate::annotation::Annotation;
 use crate::error::AnnotError;
-use serde_json;
-use serde_yaml;
 
 pub enum RenderAdapter {
     Json(JsonAdapter),
