@@ -17,5 +17,4 @@ thiserror = "1.0"
 pyo3 = "0.23.3"
 
 [features]
-# must be enabled when building with `cargo build`, maturin enables this automatically
 extension-module = ["pyo3/extension-module"]
