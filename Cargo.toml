@@ -3,6 +3,10 @@ name = "anot"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "anot"
+crate-type = ["cdylib"]
+
 [dependencies]
 anyhow = "1.0.87"
 serde = { version = "1.0", features = ["derive"] }
@@ -10,3 +14,8 @@ serde_json = "1.0"
 serde_yaml = "0.9"
 clap = { version = "4.3", features = ["derive"] }
 thiserror = "1.0"
+pyo3 = "0.23.3"
+
+[features]
+# must be enabled when building with `cargo build`, maturin enables this automatically
+extension-module = ["pyo3/extension-module"]

@@ -24,3 +24,6 @@ Cargo.lock
 
 /target
 .env
+
+/python/**/*.so
+/python/**/__pycache__/

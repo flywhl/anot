@@ -3,6 +3,7 @@ pub mod cli;
 pub mod error;
 pub mod input;
 pub mod parser;
+pub mod python;
 pub mod render;
 
 // Re-export main components for easier use

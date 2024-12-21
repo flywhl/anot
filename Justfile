@@ -5,6 +5,9 @@ default:
 build:
     cargo build
 
+dev:
+    uv run maturin develop --uv
+
 # Run the project
 run:
     cargo run
