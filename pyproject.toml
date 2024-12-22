@@ -21,7 +21,7 @@ dependencies = [
 
 [tool.maturin]
 python-source = "python"
-module-name = "anot"
+module-name = "anot._anot"
 bindings = 'pyo3'
 features = ["pyo3/extension-module"]
 

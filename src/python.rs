@@ -5,7 +5,7 @@ use crate::input::FileType;
 use crate::parser;
 use crate::render::{JsonAdapter, RenderAdapter, YamlAdapter};
 
-#[pyclass]
+#[pyclass(name = "Annotation")]
 #[derive(Clone)]
 struct PyAnnotation {
     #[pyo3(get)]
@@ -69,7 +69,7 @@ fn format_annotations(annotations: Vec<PyAnnotation>, format: &str) -> PyResult<
 }
 
 #[pymodule]
-fn anot(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
+fn _anot(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<PyAnnotation>()?;
     m.add_function(wrap_pyfunction!(extract_annotations, m)?)?;
     m.add_function(wrap_pyfunction!(format_annotations, m)?)?;
