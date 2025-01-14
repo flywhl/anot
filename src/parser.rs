@@ -128,10 +128,10 @@ fn extract_context(
 
         // Update most significant node based on type
         match parent_kind {
-            "class_definition" | "class_declaration" | "struct_item" => {
-                most_significant = Some((parent, parent_kind.to_string()));
-            }
-            "function_definition"
+            "class_definition"
+            | "class_declaration"
+            | "struct_item"
+            | "function_definition"
             | "function_item"
             | "function_declaration"
             | "method_definition" => {
