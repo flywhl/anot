@@ -9,7 +9,7 @@ pub struct Location {
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
-pub struct CitationContext {
+pub struct SyntaxContext {
     pub node_type: String,
     pub parent_type: String,
     pub associated_name: Option<String>,
@@ -21,5 +21,5 @@ pub struct Annotation {
     pub kind: String,
     pub content: String,
     pub location: Location,
-    pub context: CitationContext,
+    pub context: SyntaxContext,
 }

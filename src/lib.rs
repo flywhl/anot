@@ -7,7 +7,7 @@ pub mod python;
 pub mod render;
 
 // Re-export main components for easier use
-pub use annotation::{Annotation, CitationContext};
+pub use annotation::{Annotation, SyntaxContext};
 pub use cli::run;
 pub use cli::{Cli, OutputFormat};
 pub use error::AnotError;

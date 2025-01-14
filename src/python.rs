@@ -1,7 +1,7 @@
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
-use crate::annotation::{Annotation, CitationContext, Location};
+use crate::annotation::{Annotation, Location, SyntaxContext};
 use crate::input::FileType;
 use crate::parser;
 use crate::render::{JsonAdapter, RenderAdapter, YamlAdapter};
@@ -106,7 +106,7 @@ fn format_annotations(annotations: Vec<PyAnnotation>, format: &str) -> PyResult<
                 line: 0,
                 inline: a.location.inline,
             },
-            context: CitationContext {
+            context: SyntaxContext {
                 node_type: a.context.node_type,
                 parent_type: a.context.parent_type,
                 associated_name: a.context.associated_name,

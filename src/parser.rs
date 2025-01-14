@@ -1,4 +1,4 @@
-use crate::annotation::{Annotation, CitationContext, Location};
+use crate::annotation::{Annotation, Location, SyntaxContext};
 use crate::input::FileType;
 use std::path::Path;
 
@@ -106,7 +106,7 @@ fn extract_context(
     comment_node: tree_sitter::Node,
     source_code: &[u8],
     file_type: &FileType,
-) -> CitationContext {
+) -> SyntaxContext {
     let mut current = comment_node;
     let mut current_kind = current.kind().to_string();
     let mut associated_name = None;
@@ -187,7 +187,7 @@ fn extract_context(
         }
     }
 
-    CitationContext {
+    SyntaxContext {
         node_type: current_kind,
         parent_type,
         associated_name,

@@ -1,4 +1,4 @@
-use anot::{annotation::Location, extract_annotations, Annotation, CitationContext, FileType};
+use anot::{annotation::Location, extract_annotations, Annotation, FileType, SyntaxContext};
 use std::path::PathBuf;
 
 #[test]
@@ -14,7 +14,7 @@ fn test_python_annotation_extraction() {
         Annotation {
             kind: "note".to_string(),
             content: "this experiment will be re-written later".to_string(),
-            context: CitationContext {
+            context: SyntaxContext {
                 node_type: "class_definition".to_string(),
                 parent_type: "module".to_string(),
                 associated_name: Some("Something".to_string()),
@@ -33,7 +33,7 @@ fn test_python_annotation_extraction() {
         Annotation {
             kind: "hypothesis".to_string(),
             content: "5 is better than 4".to_string(),
-            context: CitationContext {
+            context: SyntaxContext {
                 node_type: "function_definition".to_string(),
                 parent_type: "block".to_string(),
                 associated_name: Some("run".to_string()),
@@ -61,7 +61,7 @@ fn test_rust_annotation_extraction() {
         Annotation {
             kind: "todo".to_string(),
             content: "Add more fields".to_string(),
-            context: CitationContext {
+            context: SyntaxContext {
                 node_type: "struct_item".to_string(),
                 parent_type: "source_file".to_string(),
                 associated_name: Some("Example".to_string()),
@@ -80,7 +80,7 @@ fn test_rust_annotation_extraction() {
         Annotation {
             kind: "fixme".to_string(),
             content: "This needs better error handling".to_string(),
-            context: CitationContext {
+            context: SyntaxContext {
                 node_type: "function_item".to_string(),
                 parent_type: "impl_item".to_string(),
                 associated_name: Some("new".to_string()),
@@ -108,7 +108,7 @@ fn test_javascript_annotation_extraction() {
         Annotation {
             kind: "todo".to_string(),
             content: "Add initialization".to_string(),
-            context: CitationContext {
+            context: SyntaxContext {
                 node_type: "method_definition".to_string(),
                 parent_type: "class_body".to_string(),
                 associated_name: Some("constructor".to_string()),
@@ -127,7 +127,7 @@ fn test_javascript_annotation_extraction() {
         Annotation {
             kind: "bug".to_string(),
             content: "Sometimes fails on Safari".to_string(),
-            context: CitationContext {
+            context: SyntaxContext {
                 node_type: "method_definition".to_string(),
                 parent_type: "class_body".to_string(),
                 associated_name: Some("render".to_string()),
