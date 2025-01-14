@@ -42,7 +42,7 @@ fn test_python_annotation_extraction() {
             location: Location {
                 file,
                 line: 5,
-                inline: false,
+                inline: true,
             }
         }
     );
@@ -89,7 +89,7 @@ fn test_rust_annotation_extraction() {
             location: Location {
                 file,
                 line: 9,
-                inline: false,
+                inline: true,
             }
         }
     );
@@ -117,7 +117,7 @@ fn test_javascript_annotation_extraction() {
             location: Location {
                 file: file.clone(),
                 line: 3,
-                inline: false
+                inline: true
             }
         }
     );

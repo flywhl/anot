@@ -51,7 +51,7 @@ pub fn extract_annotations(
 
             if comment_text.contains(TAG) {
                 let line_number = comment_node.start_position().row + 1;
-                let is_inline = false; // TODO: Implement this.
+                let is_inline = is_inline_comment(comment_node);
                 if let Some(annotation) = parse_annotation(
                     comment_text,
                     line_number,
@@ -200,4 +200,14 @@ fn extract_name(node: &tree_sitter::Node, field_name: &str, source_code: &[u8]) 
     node.child_by_field_name(field_name)
         .and_then(|name_node| name_node.utf8_text(source_code).ok())
         .map(|text| text.to_string())
+}
+
+/// Determine if the comment is inline or on its own
+fn is_inline_comment(comment_node: tree_sitter::Node) -> bool {
+    if let Some(prev_sibling) = comment_node.prev_sibling() {
+        // If previous node ends on same line as our comment starts, this is an inline comment
+        prev_sibling.end_position().row == comment_node.start_position().row
+    } else {
+        false
+    }
 }
