@@ -18,6 +18,19 @@ struct PyLocation {
     inline: bool,
 }
 
+#[pyclass(name = "CitationContext")]
+#[derive(Clone)]
+struct PyCitationContext {
+    #[pyo3(get)]
+    node_type: String,
+    #[pyo3(get)]
+    parent_type: String,
+    #[pyo3(get)]
+    associated_name: Option<String>,
+    #[pyo3(get)]
+    variable_name: Option<String>,
+}
+
 #[pyclass(name = "Annotation")]
 #[derive(Clone)]
 struct PyAnnotation {
@@ -27,15 +40,18 @@ struct PyAnnotation {
     content: String,
     #[pyo3(get)]
     location: PyLocation,
+    #[pyo3(get)]
+    context: PyCitationContext,
 }
 
 #[pymethods]
 impl PyAnnotation {
     #[new]
-    fn new(kind: String, content: String) -> Self {
+    fn new(kind: String, content: String, context: PyCitationContext) -> Self {
         Self {
             kind,
             content,
+            context,
             location: PyLocation {
                 file: String::from("<string>"),
                 line: 0,
@@ -68,6 +84,12 @@ fn extract_annotations(content: &str, file_type: &str) -> PyResult<Vec<PyAnnotat
                 line: a.location.line,
                 inline: a.location.inline,
             },
+            context: PyCitationContext {
+                node_type: a.context.node_type,
+                parent_type: a.context.parent_type,
+                associated_name: a.context.associated_name,
+                variable_name: a.context.variable_name,
+            },
         })
         .collect())
 }
@@ -85,11 +107,10 @@ fn format_annotations(annotations: Vec<PyAnnotation>, format: &str) -> PyResult<
                 inline: a.location.inline,
             },
             context: CitationContext {
-                node_type: String::new(),
-                parent_type: String::new(),
-                associated_name: None,
-                line_number: 0,
-                variable_name: None,
+                node_type: a.context.node_type,
+                parent_type: a.context.parent_type,
+                associated_name: a.context.associated_name,
+                variable_name: a.context.variable_name,
             },
         })
         .collect();

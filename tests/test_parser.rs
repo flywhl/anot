@@ -19,7 +19,6 @@ fn test_python_annotation_extraction() {
                 node_type: "class_definition".to_string(),
                 parent_type: "module".to_string(),
                 associated_name: Some("Something".to_string()),
-                line_number: 2,
                 variable_name: None,
             },
             location: Location {
@@ -41,7 +40,6 @@ fn test_python_annotation_extraction() {
                 node_type: "function_definition".to_string(),
                 parent_type: "block".to_string(),
                 associated_name: Some("run".to_string()),
-                line_number: 5,
                 variable_name: None,
             },
             location: Location {
@@ -70,7 +68,6 @@ fn test_rust_annotation_extraction() {
                 node_type: "struct_item".to_string(),
                 parent_type: "source_file".to_string(),
                 associated_name: Some("Example".to_string()),
-                line_number: 2,
                 variable_name: None,
             },
             location: Location {
@@ -92,7 +89,6 @@ fn test_rust_annotation_extraction() {
                 node_type: "function_item".to_string(),
                 parent_type: "impl_item".to_string(),
                 associated_name: Some("new".to_string()),
-                line_number: 9,
                 variable_name: None,
             },
             location: Location {
@@ -123,7 +119,6 @@ fn test_javascript_annotation_extraction() {
                 node_type: "method_definition".to_string(),
                 parent_type: "class_body".to_string(),
                 associated_name: Some("constructor".to_string()),
-                line_number: 3,
                 variable_name: None,
             },
             location: Location {
@@ -145,7 +140,6 @@ fn test_javascript_annotation_extraction() {
                 node_type: "method_definition".to_string(),
                 parent_type: "class_body".to_string(),
                 associated_name: Some("render".to_string()),
-                line_number: 7,
                 variable_name: None,
             },
             location: Location {

@@ -13,7 +13,6 @@ pub struct CitationContext {
     pub node_type: String,
     pub parent_type: String,
     pub associated_name: Option<String>,
-    pub line_number: usize,
     pub variable_name: Option<String>,
 }
 

@@ -191,7 +191,6 @@ fn extract_context(
         node_type: current_kind,
         parent_type,
         associated_name,
-        line_number: comment_node.start_position().row + 1,
         variable_name,
     }
 }
