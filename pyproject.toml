@@ -4,20 +4,40 @@ build-backend = "maturin"
 
 [project]
 name = "anot"
-version = "0.1.0"
-requires-python = ">=3.7"
+description = "Extract @annotations from source code comments"
+authors = [
+    { name = "Rory Byrne", email = "rory@rory.bio" }
+]
 classifiers = [
+    "Development Status :: 3 - Alpha",
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering",
+    "Intended Audience :: Developers",
+    'Intended Audience :: Information Technology',
+    "Typing :: Typed",
 ]
+license = "MIT"
+readme = "README.md"
+dynamic = ["version"]
+
+requires-python = ">=3.9"
 dependencies = [
     "maturin>=1.7.8",
 ]
+
+[project.urls]
+Homepage = "https://github.com/flywhl/anot"
+Repository = "https://github.com/flywhl/anot"
+Documentation = "https://github.com/flywhl/anot#readme"
+"Bug Tracker" = "https://github.com/flywhl/anot/issues"
+
 
 [tool.maturin]
 python-source = "python"
