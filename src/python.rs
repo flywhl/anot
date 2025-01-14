@@ -129,7 +129,7 @@ fn format_annotations(annotations: Vec<PyAnnotation>, format: &str) -> PyResult<
 // @todo: remove once https://github.com/PyO3/maturin/issues/368 is resolved
 #[pyfunction]
 fn run_cli(args: Vec<String>) -> PyResult<()> {
-    let _ = run(args);
+    run(args).map_err(|err| PyValueError::new_err(err.to_string()))?;
     Ok(())
 }
 
