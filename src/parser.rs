@@ -2,7 +2,7 @@ use crate::annotation::{Annotation, CitationContext, Location};
 use crate::input::FileType;
 use std::path::Path;
 
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use streaming_iterator::StreamingIterator;
 
 pub const TAG: &str = "@";
@@ -21,7 +21,6 @@ pub const TAG: &str = "@";
 /// # Errors
 /// If parsing the source code fails, or the tree-sitter query is invalid.
 /// ```
-// TODO: Remove unknown languages from FileType. Handle that earlier.
 pub fn extract_annotations(
     source_code: &str,
     file_type: &FileType,
@@ -29,13 +28,9 @@ pub fn extract_annotations(
 ) -> Result<Vec<Annotation>> {
     // Set up tree-sitter parser based on file type
     let mut parser = tree_sitter::Parser::new();
-    let language = file_type
-        .tree_sitter_language()
-        .ok_or(anyhow!("Invalid filetype"))?;
+    let language = file_type.tree_sitter_language();
     parser.set_language(&language)?;
-    let query = file_type
-        .tree_sitter_query()
-        .ok_or(anyhow!("Invalid filetype"))?;
+    let query = file_type.tree_sitter_query();
 
     // Parse the full source code
     let source = source_code.as_bytes();
@@ -187,7 +182,6 @@ fn extract_context(
                 FileType::Python => "left",
                 FileType::Rust => "pattern",
                 FileType::JavaScript => "declarator",
-                _ => "",
             };
             variable_name = extract_name(&node, field_name, source_code);
         }

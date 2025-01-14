@@ -1,3 +1,4 @@
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
 use crate::annotation::{Annotation, CitationContext, Location};
@@ -50,12 +51,12 @@ fn extract_annotations(content: &str, file_type: &str) -> PyResult<Vec<PyAnnotat
         "py" => FileType::Python,
         "rs" => FileType::Rust,
         "js" => FileType::JavaScript,
-        _ => FileType::Unknown,
+        _ => return Err(PyErr::new::<PyValueError, _>("Invalid file type")),
     };
 
     let dummy_path = std::path::PathBuf::from("<string>");
     let annotations = parser::extract_annotations(content, &ft, &dummy_path)
-        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))?;
+        .map_err(|e| PyErr::new::<PyValueError, _>(e.to_string()))?;
 
     Ok(annotations
         .into_iter()

@@ -24,12 +24,12 @@ impl Cli {
             let files = input::scan_directory(&self.path)?;
             for file in files {
                 let content = input::read_file(&file)?;
-                let file_type = input::determine_file_type(&file);
+                let file_type = input::determine_file_type(&file)?;
                 annotations.extend(parser::extract_annotations(&content, &file_type, &file)?);
             }
         } else {
             let content = input::read_file(&self.path)?;
-            let file_type = input::determine_file_type(&self.path);
+            let file_type = input::determine_file_type(&self.path)?;
             annotations = parser::extract_annotations(&content, &file_type, &self.path)?;
         }
         let output_format = match self.format {
