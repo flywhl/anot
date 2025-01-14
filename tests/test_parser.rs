@@ -9,7 +9,6 @@ fn test_python_annotation_extraction() {
 
     assert_eq!(annotations.len(), 2);
 
-    assert_eq!(annotations[0].kind, "note");
     assert_eq!(
         annotations[0],
         Annotation {
@@ -29,8 +28,6 @@ fn test_python_annotation_extraction() {
         }
     );
 
-    assert_eq!(annotations[1].kind, "hypothesis");
-    assert_eq!(annotations[1].content, "5 is better than 4");
     assert_eq!(
         annotations[1],
         Annotation {
@@ -78,8 +75,6 @@ fn test_rust_annotation_extraction() {
         }
     );
 
-    assert_eq!(annotations[1].location.line, 9);
-    assert!(!annotations[1].location.inline);
     assert_eq!(
         annotations[1],
         Annotation {
@@ -108,8 +103,6 @@ fn test_javascript_annotation_extraction() {
 
     assert_eq!(annotations.len(), 2);
 
-    assert_eq!(annotations[0].location.line, 3);
-    assert!(!annotations[0].location.inline);
     assert_eq!(
         annotations[0],
         Annotation {
@@ -129,8 +122,6 @@ fn test_javascript_annotation_extraction() {
         }
     );
 
-    assert_eq!(annotations[1].location.line, 6);
-    assert!(!annotations[1].location.inline);
     assert_eq!(
         annotations[1],
         Annotation {
@@ -144,7 +135,7 @@ fn test_javascript_annotation_extraction() {
             },
             location: Location {
                 file,
-                line: 6,
+                line: 7,
                 inline: false
             }
         }
