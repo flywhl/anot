@@ -67,12 +67,12 @@ fn extract_annotations(content: &str, file_type: &str) -> PyResult<Vec<PyAnnotat
         "py" => FileType::Python,
         "rs" => FileType::Rust,
         "js" => FileType::JavaScript,
-        _ => return Err(PyErr::new::<PyValueError, _>("Invalid file type")),
+        _ => return Err(PyValueError::new_err("Invalid file type")),
     };
 
     let dummy_path = std::path::PathBuf::from("<string>");
     let annotations = parser::extract_annotations(content, &ft, &dummy_path)
-        .map_err(|e| PyErr::new::<PyValueError, _>(e.to_string()))?;
+        .map_err(|e| PyValueError::new_err(e.to_string()))?;
 
     Ok(annotations
         .into_iter()
@@ -118,16 +118,12 @@ fn format_annotations(annotations: Vec<PyAnnotation>, format: &str) -> PyResult<
     let adapter = match format {
         "json" => RenderAdapter::Json(JsonAdapter),
         "yaml" => RenderAdapter::Yaml(YamlAdapter),
-        _ => {
-            return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
-                "Invalid format",
-            ))
-        }
+        _ => return Err(PyValueError::new_err("Invalid format")),
     };
 
     adapter
         .format(&annotations)
-        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
+        .map_err(|e| PyValueError::new_err(e.to_string()))
 }
 
 // @todo: remove once https://github.com/PyO3/maturin/issues/368 is resolved
