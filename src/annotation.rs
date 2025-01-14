@@ -9,8 +9,18 @@ pub struct Location {
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct CitationContext {
+    pub node_type: String,
+    pub parent_type: String,
+    pub associated_name: Option<String>,
+    pub line_number: usize,
+    pub variable_name: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct Annotation {
     pub kind: String,
     pub content: String,
     pub location: Location,
+    pub context: CitationContext,
 }

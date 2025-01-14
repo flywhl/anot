@@ -8,7 +8,9 @@ pub mod render;
 
 // Re-export main components for easier use
 pub use annotation::Annotation;
+pub use annotation::{Annotation, CitationContext};
 pub use cli::run;
+pub use cli::{Cli, OutputFormat};
 pub use error::AnotError;
 pub use input::{determine_file_type, read_file, FileType};
 pub use parser::extract_annotations;

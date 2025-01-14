@@ -1,6 +1,6 @@
 use pyo3::prelude::*;
 
-use crate::annotation::{Annotation, Location};
+use crate::annotation::{Annotation, CitationContext, Location};
 use crate::input::FileType;
 use crate::parser;
 use crate::render::{JsonAdapter, RenderAdapter, YamlAdapter};
@@ -82,6 +82,13 @@ fn format_annotations(annotations: Vec<PyAnnotation>, format: &str) -> PyResult<
                 file: std::path::PathBuf::from("<string>"),
                 line: 0,
                 inline: a.location.inline,
+            },
+            context: CitationContext {
+                node_type: String::new(),
+                parent_type: String::new(),
+                associated_name: None,
+                line_number: 0,
+                variable_name: None,
             },
         })
         .collect();

@@ -22,12 +22,24 @@ impl From<&PathBuf> for FileType {
 }
 
 impl FileType {
-    pub fn comment_prefix(&self) -> &'static str {
+    pub fn tree_sitter_query(&self) -> Option<&'static str> {
         match self {
-            FileType::Python => "#",
-            FileType::Rust => "//",
-            FileType::JavaScript => "//",
-            FileType::Unknown => "//",
+            FileType::Python => Some("(comment) @comment"),
+            FileType::Rust => Some(
+                "(line_comment) @comment
+                (block_comment) @comment",
+            ),
+            FileType::JavaScript => Some("(comment) @comment"),
+            FileType::Unknown => None,
+        }
+    }
+
+    pub fn tree_sitter_language(&self) -> Option<tree_sitter::Language> {
+        match self {
+            FileType::Python => Some(tree_sitter_python::LANGUAGE.into()),
+            FileType::Rust => Some(tree_sitter_rust::LANGUAGE.into()),
+            FileType::JavaScript => Some(tree_sitter_javascript::LANGUAGE.into()),
+            FileType::Unknown => None,
         }
     }
 }
@@ -57,4 +69,39 @@ pub fn scan_directory(path: &PathBuf) -> Result<Vec<PathBuf>> {
         }
     }
     Ok(files)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_file_type_detection() {
+        assert_eq!(FileType::from(&PathBuf::from("test.py")), FileType::Python);
+        assert_eq!(FileType::from(&PathBuf::from("test.rs")), FileType::Rust);
+        assert_eq!(
+            FileType::from(&PathBuf::from("test.js")),
+            FileType::JavaScript
+        );
+        assert_eq!(
+            FileType::from(&PathBuf::from("test.txt")),
+            FileType::Unknown
+        );
+    }
+
+    #[test]
+    fn test_queries_are_valid() {
+        for file_type in [FileType::Python, FileType::Rust, FileType::JavaScript] {
+            if let (Some(language), Some(query)) = (
+                file_type.tree_sitter_language(),
+                file_type.tree_sitter_query(),
+            ) {
+                assert!(
+                    tree_sitter::Query::new(&language, query).is_ok(),
+                    "Testing query from {:?}.",
+                    file_type
+                );
+            }
+        }
+    }
 }

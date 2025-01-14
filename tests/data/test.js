@@ -3,8 +3,8 @@ class Widget {
         this.ready = false; // @todo: Add initialization
     }
 
-    // @bug: Sometimes fails on Safari
     render() {
+        // @bug: Sometimes fails on Safari
         return '<div>Widget</div>';
     }
 }
