@@ -2,7 +2,6 @@ use anyhow::Result;
 use std::fs;
 use std::path::PathBuf;
 use std::sync::LazyLock;
-use walkdir::WalkDir;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum FileType {
@@ -71,21 +70,29 @@ pub fn determine_file_type(path: &PathBuf) -> Result<FileType> {
     FileType::try_from(path)
 }
 
+/// Find all files from support file types. See [FileType].
+///
+/// Ignores files in `.gitignore` and `.ignore`, follows symlinks and ignores hidden files.
+///
+/// # Arguments
+///
+/// * `path` - Path to directory to search recursively.
+///
+/// # Returns
+/// Paths of files from supported file types.
+///
+/// # Errors
+/// If there are errors navigating the file system.
 pub fn scan_directory(path: &PathBuf) -> Result<Vec<PathBuf>> {
-    let mut files = Vec::new();
-    for entry in WalkDir::new(path)
+    Ok(ignore::WalkBuilder::new(path)
         .follow_links(true)
-        .into_iter()
-        .filter_map(|e| e.ok())
-    {
-        if entry.file_type().is_file() {
-            let path = entry.path().to_path_buf();
-            if determine_file_type(&path).is_ok() {
-                files.push(path);
-            }
-        }
-    }
-    Ok(files)
+        .hidden(false)
+        .build()
+        .filter_map(Result::ok)
+        .filter(|e| e.file_type().is_some_and(|ft| ft.is_file()))
+        .map(|e| e.into_path())
+        .filter(|p| determine_file_type(p).is_ok())
+        .collect())
 }
 
 #[cfg(test)]
