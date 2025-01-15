@@ -45,6 +45,7 @@ static TS_QUERY_JAVASCRIPT: LazyLock<tree_sitter::Query> = LazyLock::new(|| {
 });
 
 impl FileType {
+    /// Get [Tree Sitter query](tree_sitter::Query) for file type.
     pub fn tree_sitter_query(&self) -> &'static tree_sitter::Query {
         match self {
             FileType::Python => &TS_QUERY_PYTHON,
@@ -53,6 +54,7 @@ impl FileType {
         }
     }
 
+    /// Get [Tree Sitter language](tree_sitter::Language) object from file type.
     pub fn tree_sitter_language(&self) -> tree_sitter::Language {
         match self {
             FileType::Python => tree_sitter_python::LANGUAGE.into(),
@@ -62,10 +64,18 @@ impl FileType {
     }
 }
 
+/// Read content of file in `path` to a String.
+///
+/// # Errors
+/// If there's a problem reading the file (e.g. if it doesn't exist).
 pub fn read_file(path: &PathBuf) -> Result<String> {
     fs::read_to_string(path).map_err(|e| anyhow::anyhow!("Failed to read file: {}", e))
 }
 
+/// Determine file type from `path` extension. See [FileType].
+///
+/// # Errors
+/// If the file type is not supported.
 pub fn determine_file_type(path: &PathBuf) -> Result<FileType> {
     FileType::try_from(path)
 }

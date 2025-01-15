@@ -20,7 +20,6 @@ pub const TAG: &str = "@";
 ///
 /// # Errors
 /// If parsing the source code fails, or the tree-sitter query is invalid.
-/// ```
 pub fn extract_annotations(
     source_code: &str,
     file_type: &FileType,
