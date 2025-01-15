@@ -18,9 +18,9 @@ struct PyLocation {
     inline: bool,
 }
 
-#[pyclass(name = "CitationContext")]
+#[pyclass(name = "SyntaxContext")]
 #[derive(Clone)]
-struct PyCitationContext {
+struct PySyntaxContext {
     #[pyo3(get)]
     node_type: String,
     #[pyo3(get)]
@@ -41,13 +41,13 @@ struct PyAnnotation {
     #[pyo3(get)]
     location: PyLocation,
     #[pyo3(get)]
-    context: PyCitationContext,
+    context: PySyntaxContext,
 }
 
 #[pymethods]
 impl PyAnnotation {
     #[new]
-    fn new(kind: String, content: String, context: PyCitationContext) -> Self {
+    fn new(kind: String, content: String, context: PySyntaxContext) -> Self {
         Self {
             kind,
             content,
@@ -84,7 +84,7 @@ fn extract_annotations(content: &str, file_type: &str) -> PyResult<Vec<PyAnnotat
                 line: a.location.line,
                 inline: a.location.inline,
             },
-            context: PyCitationContext {
+            context: PySyntaxContext {
                 node_type: a.context.node_type,
                 parent_type: a.context.parent_type,
                 associated_name: a.context.associated_name,
@@ -135,6 +135,8 @@ fn run_cli(args: Vec<String>) -> PyResult<()> {
 
 #[pymodule]
 fn _anot(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_class::<PySyntaxContext>()?;
+    m.add_class::<PyLocation>()?;
     m.add_class::<PyAnnotation>()?;
     m.add_function(wrap_pyfunction!(extract_annotations, m)?)?;
     m.add_function(wrap_pyfunction!(format_annotations, m)?)?;
