@@ -1,7 +1,14 @@
 from pathlib import Path
 from typing import List, Optional
 
-__all__ = ["Annotation", "extract_annotations", "format_annotations", "run_cli"]
+__all__ = [
+    "Annotation",
+    "Location",
+    "SyntaxContext",
+    "extract_annotations",
+    "format_annotations",
+    "run_cli",
+]
 
 class SyntaxContext:
     node_type: str
