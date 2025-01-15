@@ -1,6 +1,7 @@
 use anyhow::Result;
 use std::fs;
 use std::path::PathBuf;
+use std::sync::LazyLock;
 use walkdir::WalkDir;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -22,15 +23,34 @@ impl TryFrom<&PathBuf> for FileType {
     }
 }
 
+static TS_QUERY_PYTHON: LazyLock<tree_sitter::Query> = LazyLock::new(|| {
+    tree_sitter::Query::new(&tree_sitter_python::LANGUAGE.into(), "(comment) @comment")
+        .expect("Query must be valid")
+});
+
+static TS_QUERY_RUST: LazyLock<tree_sitter::Query> = LazyLock::new(|| {
+    tree_sitter::Query::new(
+        &tree_sitter_rust::LANGUAGE.into(),
+        "(line_comment) @comment
+(block_comment) @comment",
+    )
+    .expect("Query must be valid")
+});
+
+static TS_QUERY_JAVASCRIPT: LazyLock<tree_sitter::Query> = LazyLock::new(|| {
+    tree_sitter::Query::new(
+        &tree_sitter_javascript::LANGUAGE.into(),
+        "(comment) @comment",
+    )
+    .expect("Query must be valid")
+});
+
 impl FileType {
-    pub fn tree_sitter_query(&self) -> &'static str {
+    pub fn tree_sitter_query(&self) -> &'static tree_sitter::Query {
         match self {
-            FileType::Python => "(comment) @comment",
-            FileType::Rust => {
-                "(line_comment) @comment
-                (block_comment) @comment"
-            }
-            FileType::JavaScript => "(comment) @comment",
+            FileType::Python => &TS_QUERY_PYTHON,
+            FileType::Rust => &TS_QUERY_RUST,
+            FileType::JavaScript => &TS_QUERY_JAVASCRIPT,
         }
     }
 
@@ -87,18 +107,5 @@ mod tests {
             FileType::JavaScript
         );
         assert!(determine_file_type(&PathBuf::from("test.txt")).is_err());
-    }
-
-    #[test]
-    fn test_queries_are_valid() {
-        for file_type in [FileType::Python, FileType::Rust, FileType::JavaScript] {
-            let language = file_type.tree_sitter_language();
-            let query = file_type.tree_sitter_query();
-            assert!(
-                tree_sitter::Query::new(&language, query).is_ok(),
-                "Testing query from {:?}.",
-                file_type
-            );
-        }
     }
 }

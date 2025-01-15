@@ -30,7 +30,6 @@ pub fn extract_annotations(
     let mut parser = tree_sitter::Parser::new();
     let language = file_type.tree_sitter_language();
     parser.set_language(&language)?;
-    let query = file_type.tree_sitter_query();
 
     // Parse the full source code
     let source = source_code.as_bytes();
@@ -38,9 +37,9 @@ pub fn extract_annotations(
         .parse(source, None)
         .ok_or_else(|| anyhow::anyhow!("Failed to parse source code"))?;
 
-    let query = tree_sitter::Query::new(&language, query)?;
+    let query = file_type.tree_sitter_query();
     let mut query_cursor = tree_sitter::QueryCursor::new();
-    let mut matches = query_cursor.matches(&query, tree.root_node(), source);
+    let mut matches = query_cursor.matches(query, tree.root_node(), source);
 
     let mut annotations = Vec::new();
 
