@@ -24,3 +24,7 @@ streaming-iterator = "0.1.9"
 
 [features]
 extension-module = ["pyo3/extension-module"]
+
+[profile.release-with-debug]
+inherits = "release"
+debug = true
