@@ -1,6 +1,6 @@
 use anyhow::Result;
 use clap::Parser;
-use std::path::PathBuf;
+use std::{collections::HashSet, path::PathBuf};
 
 use crate::{input, parser, render};
 
@@ -14,6 +14,10 @@ pub struct Cli {
     /// Output format
     #[arg(short, long, value_enum, default_value = "json")]
     pub format: OutputFormat,
+
+    /// Comma-separated list of tags to show
+    #[arg(long, value_delimiter = ',')]
+    pub tags: Vec<String>,
 }
 
 impl Cli {
@@ -32,11 +36,22 @@ impl Cli {
             let file_type = input::determine_file_type(&self.path)?;
             annotations = parser::extract_annotations(&content, &file_type, &self.path)?;
         }
+
+        let tags: HashSet<String> = self.tags.iter().cloned().collect();
+        let filtered_annotations = if !self.tags.is_empty() {
+            annotations
+                .into_iter()
+                .filter(|ann| tags.contains(&ann.kind))
+                .collect()
+        } else {
+            annotations
+        };
+
         let output_format = match self.format {
             OutputFormat::Json => render::RenderAdapter::Json(render::JsonAdapter),
             OutputFormat::Yaml => render::RenderAdapter::Yaml(render::YamlAdapter),
         };
-        let output = output_format.format(&annotations)?;
+        let output = output_format.format(&filtered_annotations)?;
         println!("{}", output);
         Ok(())
     }
