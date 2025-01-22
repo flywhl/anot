@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
@@ -17,6 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Install Rust toolchain
+      
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
@@ -32,3 +34,42 @@ jobs:
 
       - name: Check formatting
         run: just fmt-check
+
+  benchmarks:
+    name: Benchmark
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+
+      
+      - name: Install Rust toolchain
+        uses: moonrepo/setup-rust@v1
+        with:
+          channel: stable
+          cache-target: release
+          bins: cargo-codspeed
+          
+      - name: "Install codspeed"
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-codspeed
+
+      - name: clone alacritty
+        run: git clone https://github.com/alacritty/alacritty
+
+
+
+
+
+      - name: Benchmark build
+        run: cargo codspeed build
+
+      - name: CodSpeed benchmark
+        uses: CodSpeedHQ/action@v3
+        with:
+          run: cargo codspeed run
+          token: ${{ secrets.CODSPEED_TOKEN }}
+      
