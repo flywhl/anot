@@ -42,16 +42,15 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@v4
+
       - uses: Swatinem/rust-cache@v2
 
-      
       - name: Install Rust toolchain
         uses: moonrepo/setup-rust@v1
         with:
           channel: stable
           cache-target: release
-          bins: cargo-codspeed
-          
+      
       - name: "Install codspeed"
         uses: taiki-e/install-action@v2
         with:
@@ -59,10 +58,6 @@ jobs:
 
       - name: clone alacritty
         run: git clone https://github.com/alacritty/alacritty
-
-
-
-
 
       - name: Benchmark build
         run: cargo codspeed build
